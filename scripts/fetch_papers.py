@@ -10,6 +10,7 @@ import sys
 import argparse
 import os
 import re
+import time
 import xml.etree.ElementTree as ET
 from datetime import datetime, timezone, timedelta
 from urllib.request import urlopen, Request
@@ -199,6 +200,8 @@ def main():
 
     all_pmids = set()
     for i, query in enumerate(SEARCH_QUERIES):
+        if i > 0:
+            time.sleep(1)
         print(f"[INFO] Running query {i+1}/{len(SEARCH_QUERIES)}...", file=sys.stderr)
         pmids = search_papers(query, retmax=args.max_papers, days=args.days)
         all_pmids.update(pmids)

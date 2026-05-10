@@ -69,7 +69,7 @@ jobs:
             echo "Papers found: $COUNT"
           else
             echo "count=0" >> "$GITHUB_OUTPUT"
-            python -c "import json; json.dump({'date':'${REPORT_DATE}','count':0,'papers':[]}, open('papers.json','w'), ensure_ascii=False, indent=2)"
+            python -c "import json,sys; json.dump({'date':sys.argv[1],'count':0,'papers':[]}, open('papers.json','w'), ensure_ascii=False, indent=2)" "$REPORT_DATE"
             echo "No papers found, will generate empty report"
           fi
 
