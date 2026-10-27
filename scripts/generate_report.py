@@ -20,8 +20,8 @@ API_BASE = os.environ.get(
     "ZHIPU_API_BASE", "https://open.bigmodel.cn/api/coding/paas/v4"
 )
 PRIMARY_MODEL = os.environ.get("ZHIPU_MODEL", "glm-5-turbo")
-FALLBACK_MODELS = ["glm-5-turbo", "glm-4.7", "glm-4.7-flash"]
-MAX_TOKENS = 50000
+FALLBACK_MODELS = [PRIMARY_MODEL] if PRIMARY_MODEL.startswith("nvidia/") else ["glm-5-turbo", "glm-4.7", "glm-4.7-flash"]
+MAX_TOKENS = 16384 if PRIMARY_MODEL.startswith("nvidia/") else 50000
 REQUEST_TIMEOUT = 480
 
 SYSTEM_PROMPT = (
