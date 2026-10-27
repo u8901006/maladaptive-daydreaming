@@ -73,16 +73,27 @@ jobs:
             echo "No papers found, will generate empty report"
           fi
 
-      - name: Generate report with Zhipu AI
+      - name: Generate report with AI provider
         env:
           ZHIPU_API_KEY: ${{ secrets.ZHIPU_API_KEY }}
-          ZHIPU_API_BASE: "https://open.bigmodel.cn/api/coding/paas/v4"
-          ZHIPU_MODEL: "glm-5-turbo"
+          NVIDIA_API_KEY: ${{ secrets.NVIDIA_API_KEY }}
         run: |
+          if [ -n "$NVIDIA_API_KEY" ]; then
+            export ZHIPU_API_BASE="https://integrate.api.nvidia.com/v1"
+            export ZHIPU_MODEL="nvidia/nemotron-3-ultra-550b-a55b"
+            API_KEY="$NVIDIA_API_KEY"
+          elif [ -n "$ZHIPU_API_KEY" ]; then
+            export ZHIPU_API_BASE="https://open.bigmodel.cn/api/coding/paas/v4"
+            export ZHIPU_MODEL="glm-5-turbo"
+            API_KEY="$ZHIPU_API_KEY"
+          else
+            echo "::error::Configure NVIDIA_API_KEY or refresh ZHIPU_API_KEY in repository secrets"
+            exit 1
+          fi
           python scripts/generate_report.py \
             --input papers.json \
             --output "docs/md-report-${{ steps.date.outputs.target }}.html" \
-            --api-key "$ZHIPU_API_KEY"
+            --api-key "$API_KEY"
 
       - name: Generate index page
         run: python scripts/generate_index.py
